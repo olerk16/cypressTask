@@ -1,8 +1,8 @@
 name: Run Cypress Tests
 
-on:
+on: #trigger on events
   push:
-    branches: [ main ]  
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -17,7 +17,7 @@ jobs:
       - name: Set Up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'  # Use the Node.js version compatible with your project
+          node-version: '16'
 
       - name: Install Dependencies
         run: npm install
@@ -38,4 +38,32 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Cypress Artifacts
-          path: cypress/videos/**/*.mp4
+          path: |
+            cypress/screenshots/**/*.png
+            cypress/videos/**/*.mp4
+
+#      - name: Send Email Notification
+#        if: success()  # Run this step only if all previous steps succeeded
+#        uses: dawidd6/action-send-mail@v3
+#        with:
+#          server_address: ${{ secrets.EMAIL_HOST }}
+#         server_port: ${{ secrets.EMAIL_PORT }}
+#          username: ${{ secrets.EMAIL_USERNAME }}
+#          password: ${{ secrets.EMAIL_PASSWORD }}
+#          subject: '✅ Cypress Tests Passed'
+#          body: 'All Cypress tests have passed successfully!'
+#          to: ${{ secrets.EMAIL_TO }}
+#          from: '${{ secrets.EMAIL_FROM }} <${{ secrets.EMAIL_USERNAME }}>'
+#          secure: true  # Use TLS
+
+################ SLACK MESSAGE ####################
+
+#        - name: Send Slack Notification
+#                if: success()  # Run this step only if all previous steps succeeded
+#                uses: rtCamp/action-slack-notify@v2
+#                env:
+#                  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+#                with:
+#                  args: |
+#                    send
+#                    --message "✅ All Cypress tests have passed successfully!"
