@@ -1,0 +1,41 @@
+name: Run Cypress Tests
+
+on:
+  push:
+    branches: [ main ]  
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  cypress-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # Use the Node.js version compatible with your project
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Start Application
+        run: npm start &
+        env:
+          CI: true
+
+      - name: Wait for Application
+        run: npx wait-on http://localhost:8080
+
+      - name: Run Cypress Tests
+        run: npm test
+
+      - name: Upload Test Artifacts
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: Cypress Artifacts
+          path: cypress/videos/**/*.mp4
